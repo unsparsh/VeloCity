@@ -1,0 +1,461 @@
+.page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.mapContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Top bar */
+.topBar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.brand {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--stroke);
+  transition: background 0.3s;
+}
+
+.statusOnline {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.avatarBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: opacity 0.15s;
+}
+
+.avatarBtn:hover { opacity: 0.9; }
+
+.userDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(24,165,88,0.4);
+}
+
+/* Bottom sheet */
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 12px 20px 36px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  z-index: 10;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.sheetHandle {
+  width: 36px;
+  height: 4px;
+  background: var(--stroke);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.sheetTitle {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+.sheetSubtitle {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0 0 24px;
+}
+
+/* Offline state */
+.offlineIcon {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 16px;
+  filter: grayscale(1);
+}
+
+.goOnlineBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.goOnlineBtn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+.goOnlineBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Online searching state */
+.searchingPulse {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin: 8px auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: pulse 2.2s ease-out infinite;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.offlineLink {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.offlineLink:hover:not(:disabled) { background: var(--panel); }
+.offlineLink:disabled { opacity: 0.55; }
+
+/* Incoming ride */
+.incomingHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.fareTag {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.fareCurrency {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.fareAmount {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.routeCard {
+  background: var(--bg);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.routeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.routeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.routeLine {
+  width: 2px;
+  height: 14px;
+  background: var(--stroke);
+  margin-left: 4px;
+}
+
+.routeAddr {
+  font-size: 14px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actionRow {
+  display: flex;
+  gap: 10px;
+}
+
+.declineBtn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.declineBtn:hover:not(:disabled) { background: var(--panel); }
+
+.acceptBtn {
+  flex: 2;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.acceptBtn:hover:not(:disabled) { opacity: 0.9; }
+.acceptBtn:disabled, .declineBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Active ride */
+.passengerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.passengerAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.passengerName {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.rideStatusLabel {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0;
+}
+
+.statusActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.otpForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.otpFormLabel {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: 'Geist Mono', monospace;
+}
+
+.otpFormInput {
+  width: 100%;
+  text-align: center;
+  letter-spacing: 14px;
+  padding-left: 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.otpFormInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.otpFormInput::placeholder {
+  color: var(--stroke);
+}
+
+.actionBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.actionBtn:hover:not(:disabled) { opacity: 0.9; }
+.actionBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.completeBtn {
+  background: var(--ink);
+}
+
+/* Ride completed state */
+.completedHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.completedIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.completedFareRow,
+.paymentStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.completedLabel {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.completedFareAmount {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.paymentBadge {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.paymentPaid {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.paymentPending {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.paymentChecking {
+  background: var(--panel);
+  color: var(--muted);
+}
+
+/* Error */
+.error {
+  font-size: 13px;
+  color: var(--accent-coral);
+  background: var(--accent-coral-soft);
+  border-left: 3px solid var(--accent-coral);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 0 0 12px;
+}

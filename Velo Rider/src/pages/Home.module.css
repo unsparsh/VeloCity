@@ -1,0 +1,351 @@
+.page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Map */
+.mapContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Top bar overlaid on map */
+.topBar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.brand {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatarBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: opacity 0.15s;
+}
+
+.avatarBtn:hover { opacity: 0.9; }
+
+/* User location dot */
+.userDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(24,165,88,0.4);
+}
+
+/* Driver marker */
+.driverMarker {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  cursor: default;
+}
+
+/* Bottom Sheet */
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 12px 20px 32px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  z-index: 10;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.sheetHandle {
+  width: 36px;
+  height: 4px;
+  background: var(--stroke);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.sheetTitle {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+/* Location inputs */
+.locations {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  overflow: visible;
+  margin-bottom: 16px;
+}
+
+.locationDivider {
+  height: 1px;
+  background: var(--stroke);
+  margin: 0 12px;
+}
+
+/* Fare card */
+.fareCard {
+  background: var(--bg);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.fareRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.fareLabel {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.fareMeta {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+  margin: 0;
+}
+
+.fareAmount {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.fareCurrency {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.fareBreakdown {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.bookBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+
+.bookBtn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.bookBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Searching state */
+.searchingPulse {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: 12px auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: pulse 2s ease-out infinite;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2);   opacity: 0; }
+}
+
+.searchingTitle {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.searchingSubtitle {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.cancelBtn {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cancelBtn:hover { background: var(--panel); }
+
+/* Driver assigned state */
+.driverInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0 16px;
+  border-bottom: 1px dashed var(--stroke);
+  margin-bottom: 14px;
+}
+
+.driverAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.driverName {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.driverMeta {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  font-family: 'Geist Mono', monospace;
+}
+
+.otpBadge {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.otpLabel {
+  font-size: 9px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.otpValue {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Geist Mono', monospace;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+
+/* Route summary */
+.routeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.routeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.routeAddr {
+  font-size: 14px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Error */
+.error {
+  font-size: 13px;
+  color: var(--accent-coral);
+  background: var(--accent-coral-soft);
+  border-left: 3px solid var(--accent-coral);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 8px 0 0;
+}

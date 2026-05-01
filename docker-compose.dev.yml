@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # PostgreSQL (Supabase local mock or direct postgres)
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ev_rides
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for cache + streams)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # OSRM (routing engine)
+  osrm:
+    image: osrm/osrm-backend:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./infrastructure/osrm/data:/data
+    command: osrm-routed --algorithm mld /data/india-latest.osrm
+    # Note: Download OSM data for India first:
+    # curl -o ./infrastructure/osrm/data/india-latest.osm.pbf https://download.geofabrik.de/asia/india-latest.osm.pbf
+
+  # Django Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ev_rides
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_DEBUG=True
+      - DJANGO_SECRET_KEY=dev-secret-key-change-in-prod
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+    env_file:
+      - .env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  # Procrastinate Worker (async task queue)
+  procrastinate-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ev_rides
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
+      - backend
+    volumes:
+      - ./backend:/app
+    command: python manage.py procrastinate worker --concurrency=4
+
+  # Location Stream Consumer (Redis Streams consumer)
+  location-consumer:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ev_rides
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
+      - redis
+      - backend
+    volumes:
+      - ./backend:/app
+    command: python manage.py run_location_consumer
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: velocity_dev

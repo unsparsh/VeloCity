@@ -1,0 +1,42 @@
+:root {
+  --accent:        #18A558;
+  --accent-soft:   rgba(24, 165, 88, 0.12);
+  --accent-coral:  #FF5A4E;
+  --accent-coral-soft: rgba(255, 90, 78, 0.10);
+  --accent-amber:  #F59E0B;
+  --accent-amber-soft: rgba(245, 158, 11, 0.12);
+
+  --bg:      #FAF7F4;
+  --card:    #FFFFFF;
+  --panel:   #F4F1EE;
+  --stroke:  #E8E4DF;
+
+  --ink:   #121212;
+  --ink-2: #3A3A3A;
+  --muted: #8A8A8A;
+
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+input, textarea { font-family: inherit; }

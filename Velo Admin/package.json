@@ -1,0 +1,28 @@
+{
+  "name": "velo-admin",
+  "version": "1.0.0",
+  "description": "Velocity EV — Admin Dashboard",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["ev", "rides", "admin"],
+  "author": "Velocity Team",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "axios": "^1.15.2",
+    "firebase": "^12.12.1",
+    "framer-motion": "^12.38.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.14.2",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "vite": "^8.0.9"
+  }
+}

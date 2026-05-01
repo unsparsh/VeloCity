@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#18A558" />
+  <title>Offline — Velo Driver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FAF7F4;
+      --ink: #121212;
+      --muted: #6B6760;
+      --stroke: #D9D4CE;
+      --accent: #18A558;
+      --accent-soft: #E7F5F0;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+    .logo-sub  { font-size: 12px; color: var(--muted); }
+    .icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px; }
+    p  { font-size: 15px; color: var(--muted); margin: 0 0 36px; max-width: 280px; line-height: 1.5; }
+    button {
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.9; }
+    .hint { margin-top: 20px; font-size: 13px; color: var(--stroke); }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+      <g stroke="#18A558" stroke-width="1.8" stroke-linecap="round">
+        <line x1="2" y1="4" x2="2" y2="18"/>
+        <line x1="6" y1="2" x2="6" y2="20"/>
+        <line x1="10" y1="5" x2="10" y2="17"/>
+        <line x1="14" y1="3" x2="14" y2="19"/>
+        <line x1="18" y1="6" x2="18" y2="16"/>
+      </g>
+    </svg>
+    <div>
+      <div class="logo-text">Velocity</div>
+      <div class="logo-sub">Driver</div>
+    </div>
+  </div>
+
+  <div class="icon-wrap">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#18A558" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="1" y1="1" x2="23" y2="23"/>
+      <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+      <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
+      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+      <line x1="12" y1="20" x2="12.01" y2="20"/>
+    </svg>
+  </div>
+
+  <h1>You're offline</h1>
+  <p>You need an internet connection to receive and manage rides.</p>
+
+  <button onclick="window.location.reload()">
+    Try again
+  </button>
+
+  <p class="hint">Served by the Velocity service worker.</p>
+</body>
+</html>

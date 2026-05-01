@@ -1,0 +1,148 @@
+.page {
+  padding: 28px 32px;
+  max-width: 1100px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 2px;
+}
+
+.pageSubtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Stats grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 8px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 2px;
+}
+
+.statSub {
+  font-size: 12px;
+  color: var(--accent);
+  margin: 0;
+}
+
+/* Section */
+.section {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+/* Table */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--bg);
+  border-bottom: 1px solid var(--stroke);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 11px 16px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--stroke);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: var(--bg); }
+
+.mono {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--muted) !important;
+}
+
+.muted { color: var(--muted) !important; }
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 32px !important;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.badgeGray  { background: var(--status-gray-soft);   color: var(--status-gray);   }
+.badgeBlue  { background: var(--status-blue-soft);   color: var(--status-blue);   }
+.badgeOrange{ background: var(--status-orange-soft); color: var(--status-orange); }
+.badgeGreen { background: var(--status-green-soft);  color: var(--status-green);  }
+.badgeRed   { background: var(--status-red-soft);    color: var(--status-red);    }
+.badgePurple{ background: var(--status-purple-soft); color: var(--status-purple); }
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  color: var(--muted);
+  font-size: 14px;
+}

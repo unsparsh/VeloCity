@@ -1,0 +1,340 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* isometric grid background */
+.page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='34'%3E%3Cpath d='M0 17 L30 0 L60 17 L30 34 Z' fill='none' stroke='%23D9D4CE' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px dashed var(--stroke);
+  border-radius: 8px;
+  padding: 36px 32px 32px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.brandMark {
+  width: 22px;
+  height: 22px;
+}
+
+.brandName {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+/* Heading */
+.heading {
+  margin-bottom: 24px;
+}
+
+.heading h2 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.heading p {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--stroke);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.tabBtn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tabBtn:not(:last-child) {
+  border-right: 1px solid var(--stroke);
+}
+
+.tabActive {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--stroke);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+/* Phone number row */
+.phoneRow {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--stroke);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.phoneRow:focus-within {
+  border-color: var(--accent);
+}
+
+.dialCode {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: var(--panel);
+  font-size: 14px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--ink-2);
+  border-right: 1px solid var(--stroke);
+  white-space: nowrap;
+}
+
+.phoneInput {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+  background: var(--bg);
+  padding: 11px 14px;
+  outline: none;
+}
+
+.phoneInput:focus {
+  border-color: transparent;
+}
+
+/* OTP row */
+.otpRow {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.otpBox {
+  width: 46px;
+  height: 52px;
+  border: 1px solid var(--stroke);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s;
+  color: var(--ink);
+  font-family: 'Geist Mono', monospace;
+}
+
+.otpBox:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Submit button */
+.submitBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.textBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-align: center;
+  transition: color 0.15s;
+}
+
+.textBtn:hover {
+  color: var(--ink);
+}
+
+/* Error */
+.error {
+  font-size: 13px;
+  color: var(--accent-coral);
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--accent-coral-soft);
+  border-radius: 4px;
+  border-left: 3px solid var(--accent-coral);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--stroke);
+}
+
+/* Google button */
+.googleBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.googleBtn:hover:not(:disabled) {
+  background: var(--panel);
+  border-color: var(--stroke-2);
+}
+
+.googleBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Terms */
+.terms {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin: 16px 0 0;
+  line-height: 1.5;
+}
+
+.terms a {
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--stroke);
+  transition: color 0.15s;
+}
+
+.terms a:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 28px 20px 24px;
+  }
+
+  .heading h2 {
+    font-size: 22px;
+  }
+
+  .otpBox {
+    width: 40px;
+    height: 46px;
+    font-size: 18px;
+  }
+}

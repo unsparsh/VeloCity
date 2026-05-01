@@ -1,0 +1,153 @@
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.fare {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 2px;
+  margin: 0 0 20px;
+}
+
+.fareCurrency {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.fareAmount {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.methods {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--stroke);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font: inherit;
+  text-align: left;
+}
+
+.method:hover:not(:disabled) { border-color: var(--ink-2); }
+.method:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.methodActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.methodMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.methodLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.methodSub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.methodTag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-coral);
+  background: var(--accent-coral-soft);
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--accent-coral);
+  background: var(--accent-coral-soft);
+  border-left: 3px solid var(--accent-coral);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 0 0 12px;
+}
+
+.payBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.payBtn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+.payBtn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Paid state */
+.paidCard {
+  text-align: center;
+  padding: 12px 8px 8px;
+}
+
+.paidIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.paidTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin: 0 0 4px;
+}
+
+.paidAmount {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.paidMeta {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
