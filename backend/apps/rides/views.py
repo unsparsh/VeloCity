@@ -15,6 +15,11 @@ from apps.users.authentication.firebase import (
 )
 from .models import Ride
 from .serializers import RideSerializer, EstimatePriceSerializer, RequestRideSerializer
+from .services.redis_pipeline import (
+    cache_ride,
+    publish_ride_request,
+    invalidate_ride_cache,
+)
 
 
 OTP_TTL_MINUTES = 10
@@ -78,6 +83,13 @@ def request_ride(request):
         estimated_price=price, distance_km=dist, pricing_breakdown=breakdown,
         status='searching',
     )
+
+    # Cache for fast driver-side lookup + publish to Redis Stream so drivers
+    # are notified in real time. Postgres is the durable source of truth;
+    # Redis failures here are logged but don't fail the request.
+    cache_ride(ride)
+    publish_ride_request(ride)
+
     return Response(RideSerializer(ride).data, status=201)
 
 
@@ -105,6 +117,7 @@ def cancel_ride(request, ride_id):
     ride.cancelled_by = 'user'
     ride.cancel_reason = request.data.get('reason', '')
     ride.save(update_fields=['status', 'cancelled_at', 'cancelled_by', 'cancel_reason'])
+    invalidate_ride_cache(str(ride.id))
     return Response(RideSerializer(ride).data)
 
 
@@ -113,6 +126,59 @@ def cancel_ride(request, ride_id):
 def ride_history(request):
     rides = Ride.objects.filter(user=request.user).order_by('-requested_at')[:20]
     return Response(RideSerializer(rides, many=True).data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def frequent_destinations(request):
+    """Top destinations from the user's completed rides, ranked by trip count.
+
+    Used by the booking screen's "Frequent places" section. Groups by
+    destination_address (case-insensitive on the most recent variant) so a
+    location visited 5 times bubbles to the top. Returns at most `limit`
+    entries (default 5, max 10).
+    """
+    from django.db.models import Count, Max
+    try:
+        limit = min(int(request.query_params.get('limit', 5)), 10)
+    except ValueError:
+        limit = 5
+
+    # Group by exact destination_address. For each group, pick the most-recent
+    # row's lat/lng/address as the representative entry.
+    grouped = (
+        Ride.objects
+        .filter(user=request.user, status='completed')
+        .values('destination_address')
+        .annotate(trip_count=Count('id'), last_used_at=Max('ride_completed_at'))
+        .order_by('-trip_count', '-last_used_at')[:limit]
+    )
+
+    results = []
+    for entry in grouped:
+        # Pull lat/lng from the most-recent ride to that address
+        latest = (
+            Ride.objects
+            .filter(
+                user=request.user,
+                status='completed',
+                destination_address=entry['destination_address'],
+            )
+            .order_by('-ride_completed_at')
+            .values('destination_lat', 'destination_lng', 'destination_address')
+            .first()
+        )
+        if not latest:
+            continue
+        results.append({
+            'lat': float(latest['destination_lat']),
+            'lng': float(latest['destination_lng']),
+            'display_name': latest['destination_address'],
+            'trip_count': entry['trip_count'],
+            'last_used_at': entry['last_used_at'].isoformat() if entry['last_used_at'] else None,
+        })
+
+    return Response(results)
 
 
 @api_view(['GET'])

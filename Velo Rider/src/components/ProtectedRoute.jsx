@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { supabase } from '../services/supabase'
 import useAuthStore from '../store/useAuthStore'
 
 export default function ProtectedRoute({ children }) {
-  const { user, fetchProfile, setFirebaseUser } = useAuthStore()
+  const { user, fetchProfile } = useAuthStore()
   const [checking, setChecking] = useState(true)
   const [authed, setAuthed] = useState(false)
 
   useEffect(() => {
-    // When Firebase isn't configured (dev/preview), bypass auth check
-    if (!auth) {
+    // Demo users bypass Supabase session check
+    if (user?.isDemo) {
       setAuthed(true)
       setChecking(false)
       return
     }
 
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setFirebaseUser(firebaseUser)
+    // Check initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
         if (!user) {
           try {
             await fetchProfile()
@@ -35,7 +34,19 @@ export default function ProtectedRoute({ children }) {
       }
       setChecking(false)
     })
-    return () => unsub()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session) {
+          setAuthed(true)
+        } else {
+          setAuthed(false)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   if (checking) {

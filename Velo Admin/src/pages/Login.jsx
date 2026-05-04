@@ -1,69 +1,67 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { supabase, demoSignIn, DEMO_CREDS } from '../services/supabase'
 import useAdminStore from '../store/useAdminStore'
 import styles from './Login.module.css'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { fetchProfile, setFirebaseUser } = useAdminStore()
-
+  const { fetchProfile } = useAdminStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const afterLogin = async (firebaseUser) => {
-    setFirebaseUser(firebaseUser)
+  const afterLogin = async () => {
     try {
       await fetchProfile()
       navigate('/dashboard', { replace: true })
     } catch (err) {
       const status = err?.response?.status
       if (status === 403 || status === 401) {
-        setError('Access denied. Contact the fleet manager to grant admin access.')
+        setError('Access denied. Contact the fleet manager.')
       } else if (status === 404) {
         setError('No Velocity account found for this email.')
       } else {
         setError(err.message || 'Sign-in failed.')
       }
-      if (auth) await auth.signOut()
+      await supabase.auth.signOut()
     }
   }
 
   const handleEmail = async (e) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
+    setError(''); setLoading(true)
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      await afterLogin(result.user)
+      const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+      if (err) throw err
+      await afterLogin()
     } catch (err) {
-      setError(
-        err.code === 'auth/invalid-credential'
-          ? 'Wrong email or password.'
-          : err.message || 'Sign-in failed.'
-      )
-    } finally {
-      setLoading(false)
-    }
+      setError(err.message?.includes('Invalid login') ? 'Wrong email or password.' : err.message || 'Sign-in failed.')
+    } finally { setLoading(false) }
+  }
+
+  const handleDemo = async () => {
+    setError(''); setLoading(true)
+    try {
+      const { error: err } = await demoSignIn()
+      if (err) throw err
+      await afterLogin()
+    } catch (err) {
+      setError(err.message || 'Demo sign-in failed.')
+    } finally { setLoading(false) }
   }
 
   const handleGoogle = async () => {
-    if (!auth) { setError('Firebase not configured.'); return }
-    setError('')
-    setLoading(true)
+    setError(''); setLoading(true)
     try {
-      const result = await signInWithPopup(auth, new GoogleAuthProvider())
-      await afterLogin(result.user)
+      const { error: err } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/dashboard' },
+      })
+      if (err) throw err
     } catch (err) {
       setError(err.message || 'Google sign-in failed.')
-    } finally {
       setLoading(false)
     }
   }
@@ -93,26 +91,13 @@ export default function Login() {
         <form onSubmit={handleEmail} className={styles.form}>
           <div className={styles.field}>
             <label className={styles.label}>Email address</label>
-            <input
-              className={styles.input}
-              type="email"
-              placeholder="admin@velocity.in"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoFocus
-              required
-            />
+            <input className={styles.input} type="email" placeholder="admin@velocity.in"
+              value={email} onChange={(e) => setEmail(e.target.value)} autoFocus required />
           </div>
           <div className={styles.field}>
             <label className={styles.label}>Password</label>
-            <input
-              className={styles.input}
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <input className={styles.input} type="password" placeholder="••••••••"
+              value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
           {error && <p className={styles.error}>{error}</p>}
           <button className={styles.submitBtn} type="submit" disabled={loading}>
@@ -130,6 +115,11 @@ export default function Login() {
             <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
           </svg>
           Continue with Google
+        </button>
+
+        <button className={styles.googleBtn} onClick={handleDemo} disabled={loading}
+          style={{ marginTop: 8, background: 'var(--accent)', color: '#fff', border: 'none' }}>
+          🚀 Demo Login
         </button>
       </div>
     </div>

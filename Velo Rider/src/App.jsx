@@ -1,10 +1,12 @@
 import { Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Landing from './pages/Landing'
 
-const Login = lazy(() => import('./pages/Login'))
-const Home = lazy(() => import('./pages/Home'))
-const Wallet = lazy(() => import('./pages/Wallet'))
+const Login          = lazy(() => import('./pages/Login'))
+const Home           = lazy(() => import('./pages/Home'))
+const Wallet         = lazy(() => import('./pages/Wallet'))
+const ChooseLocation = lazy(() => import('./pages/ChooseLocation'))
+const BookRide       = lazy(() => import('./pages/BookRide'))
+const WorkingOn      = lazy(() => import('./pages/WorkingOn'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 
 function Spinner() {
@@ -34,14 +36,20 @@ export default function App() {
     <Router>
       <Suspense fallback={<Spinner />}>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/home" element={
+          <Route path="/" element={
             <ProtectedRoute><Home /></ProtectedRoute>
           } />
+          <Route path="/login" element={<Login />} />
           <Route path="/wallet" element={
             <ProtectedRoute><Wallet /></ProtectedRoute>
           } />
+          <Route path="/choose-location" element={
+            <ProtectedRoute><ChooseLocation /></ProtectedRoute>
+          } />
+          <Route path="/book-ride" element={
+            <ProtectedRoute><BookRide /></ProtectedRoute>
+          } />
+          <Route path="/working-on" element={<WorkingOn />} />
         </Routes>
       </Suspense>
     </Router>

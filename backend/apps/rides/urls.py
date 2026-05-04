@@ -6,6 +6,7 @@ urlpatterns = [
     path('estimate-price/', views.estimate_price_view, name='ride-estimate-price'),
     path('request/', views.request_ride, name='ride-request'),
     path('history/', views.ride_history, name='ride-history'),
+    path('frequent/', views.frequent_destinations, name='ride-frequent-destinations'),
     path('<uuid:ride_id>/', views.ride_detail, name='ride-detail'),
     path('<uuid:ride_id>/cancel/', views.cancel_ride, name='ride-cancel'),
     path('<uuid:ride_id>/driver-location/', views.driver_location, name='ride-driver-location'),

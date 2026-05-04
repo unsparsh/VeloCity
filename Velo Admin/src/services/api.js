@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { auth } from './firebase'
+import { supabase } from './supabase'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
@@ -7,11 +7,9 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  if (auth?.currentUser) {
-    try {
-      const token = await auth.currentUser.getIdToken()
-      config.headers.Authorization = `Bearer ${token}`
-    } catch { /* continue without token */ }
+  const { data: { session } } = await supabase.auth.getSession()
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`
   }
   return config
 })

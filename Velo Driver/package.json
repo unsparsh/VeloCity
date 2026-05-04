@@ -8,11 +8,16 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": ["ev", "rides", "driver"],
+  "keywords": [
+    "ev",
+    "rides",
+    "driver"
+  ],
   "author": "Velocity Team",
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
     "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.15.2",
     "firebase": "^12.12.1",

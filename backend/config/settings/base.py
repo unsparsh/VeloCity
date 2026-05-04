@@ -152,3 +152,8 @@ LOCATION_STREAM_GROUP = env('LOCATION_STREAM_GROUP', default='location-consumers
 LOCATION_STREAM_CONSUMER = env('LOCATION_STREAM_CONSUMER', default='consumer-1')
 LOCATION_STREAM_MAXLEN = env('LOCATION_STREAM_MAXLEN', default='10000')
 LOCATION_DB_FLUSH_INTERVAL_SEC = env('LOCATION_DB_FLUSH_INTERVAL_SEC', default='30')
+
+# Ride request stream (drivers consume this for new pending rides)
+RIDES_STREAM_KEY = env('RIDES_STREAM_KEY', default='rides:requests')
+RIDES_STREAM_MAXLEN = env('RIDES_STREAM_MAXLEN', default='10000')
+RIDE_CACHE_TTL_SEC = env('RIDE_CACHE_TTL_SEC', default='600')

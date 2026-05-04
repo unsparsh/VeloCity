@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { supabase } from '../services/supabase'
 import useDriverStore from '../store/useDriverStore'
 
+const SUPABASE_CONFIGURED = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+const DEMO_AUTH = import.meta.env.VITE_DEMO_AUTH === 'true'
+
 export default function ProtectedRoute({ children }) {
-  const { driver, fetchProfile, setFirebaseUser } = useDriverStore()
+  const { driver, fetchProfile } = useDriverStore()
   const [checking, setChecking] = useState(true)
   const [authed, setAuthed] = useState(false)
 
   useEffect(() => {
-    if (!auth) {
+    if (!SUPABASE_CONFIGURED || DEMO_AUTH) {
       setAuthed(true)
       setChecking(false)
       return
     }
-
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setFirebaseUser(firebaseUser)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
         if (!driver) {
           try {
             await fetchProfile()
@@ -34,7 +34,18 @@ export default function ProtectedRoute({ children }) {
       }
       setChecking(false)
     })
-    return () => unsub()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session) {
+          setAuthed(true)
+        } else {
+          setAuthed(false)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   if (checking) {

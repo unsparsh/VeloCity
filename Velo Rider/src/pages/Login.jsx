@@ -1,13 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { supabase, isDemoPhone, demoSignIn, DEMO_CREDS } from '../services/supabase'
 import useAuthStore from '../store/useAuthStore'
 import styles from './Login.module.css'
 
@@ -15,7 +8,7 @@ const TABS = ['Phone', 'Email']
 
 export default function Login() {
   const navigate = useNavigate()
-  const { fetchProfile, registerProfile, setFirebaseUser } = useAuthStore()
+  const { fetchProfile } = useAuthStore()
 
   const [tab, setTab] = useState('Phone')
   const [phone, setPhone] = useState('')
@@ -24,31 +17,13 @@ export default function Login() {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [step, setStep] = useState('input') // 'input' | 'otp' | 'register'
   const [fullName, setFullName] = useState('')
-  const [confirmationResult, setConfirmationResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isDemo, setIsDemo] = useState(false)
 
-  const recaptchaRef = useRef(null)
   const otpRefs = useRef([])
 
-  useEffect(() => {
-    return () => {
-      if (window._recaptchaVerifier) {
-        window._recaptchaVerifier.clear()
-        window._recaptchaVerifier = null
-      }
-    }
-  }, [])
-
-  const initRecaptcha = () => {
-    if (!window._recaptchaVerifier) {
-      window._recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-      })
-    }
-    return window._recaptchaVerifier
-  }
-
+  /* ── Phone submit ─────────────────────────────────────────────── */
   const handlePhoneSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -58,11 +33,19 @@ export default function Login() {
     }
     setLoading(true)
     try {
-      const verifier = initRecaptcha()
-      const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`
-      const result = await signInWithPhoneNumber(auth, formattedPhone, verifier)
-      setConfirmationResult(result)
-      setStep('otp')
+      if (isDemoPhone(phone)) {
+        // Demo mode — skip real SMS, go straight to OTP input
+        setIsDemo(true)
+        setStep('otp')
+      } else {
+        // Real Supabase phone OTP
+        const { error: otpError } = await supabase.auth.signInWithOtp({
+          phone: phone.startsWith('+') ? phone : `+91${phone}`,
+        })
+        if (otpError) throw otpError
+        setIsDemo(false)
+        setStep('otp')
+      }
     } catch (err) {
       setError(err.message || 'Failed to send OTP. Try again.')
     } finally {
@@ -70,6 +53,7 @@ export default function Login() {
     }
   }
 
+  /* ── OTP input helpers ────────────────────────────────────────── */
   const handleOtpChange = (index, value) => {
     if (!/^\d?$/.test(value)) return
     const next = [...otp]
@@ -85,6 +69,7 @@ export default function Login() {
     }
   }
 
+  /* ── OTP verify ───────────────────────────────────────────────── */
   const handleOtpSubmit = async (e) => {
     e.preventDefault()
     const code = otp.join('')
@@ -95,56 +80,86 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const result = await confirmationResult.confirm(code)
-      await afterFirebaseLogin(result.user)
-    } catch {
-      setError('Invalid OTP. Check and try again.')
+      if (isDemo) {
+        // Demo mode — validate against hardcoded OTP
+        if (code !== DEMO_CREDS.otp) {
+          throw new Error('Invalid OTP. Use 123456 for demo.')
+        }
+        const result = await demoSignIn()
+        if (result.error) throw result.error
+        if (result.demoBypass) {
+          useAuthStore.getState().setDemoUser()
+          navigate('/')
+          return
+        }
+      } else {
+        // Real Supabase OTP verification
+        const { error: verifyErr } = await supabase.auth.verifyOtp({
+          phone: phone.startsWith('+') ? phone : `+91${phone}`,
+          token: code,
+          type: 'sms',
+        })
+        if (verifyErr) throw verifyErr
+      }
+      await afterLogin()
+    } catch (err) {
+      setError(err.message || 'Invalid OTP. Check and try again.')
     } finally {
       setLoading(false)
     }
   }
 
+  /* ── Email sign-in ────────────────────────────────────────────── */
   const handleEmailSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      await afterFirebaseLogin(result.user)
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (signInErr) throw signInErr
+      await afterLogin()
     } catch (err) {
-      setError(err.code === 'auth/invalid-credential'
-        ? 'Wrong email or password.'
-        : err.message || 'Sign-in failed.')
+      setError(
+        err.message?.includes('Invalid login')
+          ? 'Wrong email or password.'
+          : err.message || 'Sign-in failed.'
+      )
     } finally {
       setLoading(false)
     }
   }
 
+  /* ── Google sign-in ───────────────────────────────────────────── */
   const handleGoogleLogin = async () => {
     setError('')
     setLoading(true)
     try {
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
-      await afterFirebaseLogin(result.user)
+      const { error: oauthErr } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin },
+      })
+      if (oauthErr) throw oauthErr
+      // Redirect happens — no further code runs
     } catch (err) {
       setError(err.message || 'Google sign-in failed.')
-    } finally {
       setLoading(false)
     }
   }
 
-  const afterFirebaseLogin = async (firebaseUser) => {
-    setFirebaseUser(firebaseUser)
+  /* ── After login ──────────────────────────────────────────────── */
+  const afterLogin = async () => {
     try {
       await fetchProfile()
       navigate('/')
     } catch {
-      // Profile doesn't exist yet — go to registration step
       setStep('register')
     }
   }
 
+  /* ── Registration ─────────────────────────────────────────────── */
   const handleRegister = async (e) => {
     e.preventDefault()
     if (!fullName.trim()) {
@@ -154,11 +169,10 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await registerProfile({
-        full_name: fullName,
-        phone: tab === 'Phone' ? phone : undefined,
-        email: tab === 'Email' ? email : undefined,
+      await supabase.auth.updateUser({
+        data: { display_name: fullName, role: 'rider' },
       })
+      await fetchProfile()
       navigate('/')
     } catch (err) {
       setError(err.message || 'Registration failed.')
@@ -215,7 +229,12 @@ export default function Login() {
           <>
             <div className={styles.heading}>
               <h2>Enter OTP</h2>
-              <p>Sent to <strong>{phone.startsWith('+') ? phone : `+91 ${phone}`}</strong></p>
+              <p>
+                {isDemo
+                  ? <>Demo mode — use <strong>123456</strong></>
+                  : <>Sent to <strong>{phone.startsWith('+') ? phone : `+91 ${phone}`}</strong></>
+                }
+              </p>
             </div>
             <form onSubmit={handleOtpSubmit} className={styles.form}>
               <div className={styles.otpRow}>
@@ -285,6 +304,9 @@ export default function Login() {
                       required
                     />
                   </div>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 6 }}>
+                    Demo: use <strong>9999999999</strong>
+                  </p>
                 </div>
                 {error && <p className={styles.error}>{error}</p>}
                 <button className={styles.submitBtn} disabled={loading}>
@@ -345,9 +367,6 @@ export default function Login() {
           </>
         )}
       </div>
-
-      {/* Invisible reCAPTCHA anchor */}
-      <div id="recaptcha-container" ref={recaptchaRef} />
     </div>
   )
 }

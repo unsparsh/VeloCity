@@ -1,0 +1,506 @@
+/* ── Page: two-column split ─────────────────────────────────── */
+.page {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'Geist', sans-serif;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px 28px;
+  border-right: 1px solid var(--stroke);
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+/* Header */
+.sideHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--stroke);
+  margin-bottom: 2px;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--stroke);
+  border-radius: 7px;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.backBtn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sideBrand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+
+/* ── Spinner (requesting) ───────────────────────────────────── */
+.spinnerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 0;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--stroke);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinnerText {
+  font-size: 14px;
+  color: var(--ink);
+  opacity: 0.55;
+  margin: 0;
+}
+
+/* ── Error / Cancelled ──────────────────────────────────────── */
+.errorSection,
+.cancelledSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.errorMsg {
+  font-size: 14px;
+  color: #e55353;
+  margin: 0;
+}
+
+.cancelledIcon {
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid var(--stroke);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancelledTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.12s;
+}
+
+.retryBtn:hover { opacity: 0.85; }
+
+/* ── Status card ────────────────────────────────────────────── */
+.statusCard {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(24, 165, 88, 0.5); }
+  50%       { box-shadow: 0 0 0 5px rgba(24, 165, 88, 0); }
+}
+
+.statusText {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Searching pulse animation */
+.searchPulse {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+}
+
+.pulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  animation: pulseOut 1.8s ease-out infinite;
+}
+
+@keyframes pulseOut {
+  0%   { transform: scale(0.5); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.pulseCore {
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ETA */
+.etaRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.etaVal {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.etaUnit {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.etaLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  opacity: 0.4;
+  margin-left: 4px;
+}
+
+/* ── Driver card ────────────────────────────────────────────── */
+.driverCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.driverAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.driverInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.driverName {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--ink);
+}
+
+.driverMeta {
+  font-size: 12px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--ink);
+  opacity: 0.5;
+}
+
+.driverRating {
+  font-size: 12px;
+  color: #e08c00;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.otpBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 6px 10px;
+  flex-shrink: 0;
+}
+
+.otpLabel {
+  font-size: 9px;
+  font-family: 'Geist Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.otpValue {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Geist Mono', monospace;
+  color: var(--accent);
+  letter-spacing: 3px;
+}
+
+/* ── Trip card ──────────────────────────────────────────────── */
+.tripCard {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tripRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tripDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tripLine {
+  width: 1px;
+  height: 10px;
+  background: var(--stroke);
+  margin-left: 4px;
+}
+
+.tripAddr {
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tripMeta {
+  display: flex;
+  gap: 10px;
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1px solid var(--stroke);
+  font-size: 11.5px;
+  font-family: 'Geist Mono', monospace;
+  color: var(--ink);
+  opacity: 0.4;
+  flex-wrap: wrap;
+}
+
+/* ── Cancel button ──────────────────────────────────────────── */
+.cancelBtn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  opacity: 0.65;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: #fff0f0;
+  border-color: #e55353;
+  color: #e55353;
+  opacity: 1;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Payment section ────────────────────────────────────────── */
+.paymentSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.arrivedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid rgba(24, 165, 88, 0.2);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+/* ── Map ────────────────────────────────────────────────────── */
+.mapWrap {
+  position: relative;
+  height: 100vh;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating status pill on map */
+.mapPill {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.mapPillDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+/* ── Map markers ────────────────────────────────────────────── */
+.markerPickup {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(24, 165, 88, 0.5);
+}
+
+.markerDest {
+  width: 12px;
+  height: 12px;
+  background: var(--ink);
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.markerDriver {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  cursor: default;
+  user-select: none;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  .mapWrap {
+    height: 55vh;
+    order: 0;
+  }
+
+  .sidebar {
+    height: 45vh;
+    order: 1;
+    border-right: none;
+    border-top: 1px solid var(--stroke);
+    padding: 16px 20px 24px;
+  }
+
+  .mapPill {
+    top: 12px;
+  }
+}

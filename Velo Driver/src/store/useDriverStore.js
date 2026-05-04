@@ -1,33 +1,52 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { auth } from '../services/firebase'
-import api from '../services/api'
+import { supabase } from '../services/supabase'
 
 const useDriverStore = create(
   persist(
     (set) => ({
       driver: null,
-      firebaseUser: null,
+      session: null,
 
-      setFirebaseUser: (firebaseUser) => set({ firebaseUser }),
+      setSession: (session) => set({ session }),
 
       fetchProfile: async () => {
-        const { data } = await api.get('/auth/driver/me/')
-        set({ driver: data })
-        return data
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return null
+        const user = session.user
+        const driver = {
+          id: user.id,
+          email: user.email,
+          display_name: user.user_metadata?.display_name || user.email,
+          phone: user.phone || user.user_metadata?.phone || '',
+          role: user.user_metadata?.role || 'driver',
+        }
+        set({ driver, session })
+        return driver
       },
 
       registerProfile: async ({ full_name, phone, license_number, email }) => {
-        const { data } = await api.post('/auth/driver/register/', {
-          full_name, phone, license_number, email,
-        })
-        set({ driver: data })
-        return data
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase.auth.updateUser({
+            data: { display_name: full_name, phone, license_number, role: 'driver' },
+          })
+        }
+        const driver = {
+          id: user?.id,
+          email: email || user?.email,
+          display_name: full_name,
+          phone,
+          license_number,
+          role: 'driver',
+        }
+        set({ driver })
+        return driver
       },
 
       logout: async () => {
-        if (auth) await auth.signOut()
-        set({ driver: null, firebaseUser: null })
+        await supabase.auth.signOut()
+        set({ driver: null, session: null })
       },
     }),
     {

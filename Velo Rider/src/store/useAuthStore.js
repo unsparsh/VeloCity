@@ -1,40 +1,66 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { auth } from '../services/firebase'
-import api from '../services/api'
+import { supabase } from '../services/supabase'
+
+export const DEMO_USER = {
+  id: 'demo-rider-local',
+  email: 'demorider@velocity.app',
+  display_name: 'Demo Rider',
+  full_name: 'Demo Rider',
+  phone: '9999999999',
+  role: 'rider',
+  isDemo: true,
+}
 
 const useAuthStore = create(
   persist(
     (set, get) => ({
       user: null,
-      firebaseUser: null,
-      token: null,
+      session: null,
       loading: false,
       error: null,
 
-      setFirebaseUser: (firebaseUser) => set({ firebaseUser }),
-
-      setToken: (token) => set({ token }),
+      setSession: (session) => set({ session }),
 
       fetchProfile: async () => {
-        try {
-          const { data } = await api.get('/auth/me/')
-          set({ user: data })
-          return data
-        } catch {
-          set({ user: null })
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return null
+        // Store user metadata from Supabase session
+        const user = session.user
+        const profile = {
+          id: user.id,
+          email: user.email,
+          display_name: user.user_metadata?.display_name || user.email,
+          phone: user.phone || user.user_metadata?.phone || '',
+          role: user.user_metadata?.role || 'rider',
         }
+        set({ user: profile, session })
+        return profile
       },
 
       registerProfile: async ({ full_name, phone, email }) => {
-        const { data } = await api.post('/auth/register/', { full_name, phone, email })
-        set({ user: data })
-        return data
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase.auth.updateUser({
+            data: { display_name: full_name, phone, role: 'rider' },
+          })
+        }
+        const profile = {
+          id: user?.id,
+          email: email || user?.email,
+          display_name: full_name,
+          phone,
+          role: 'rider',
+        }
+        set({ user: profile })
+        return profile
       },
 
+      setDemoUser: () => set({ user: DEMO_USER, session: null }),
+
       logout: async () => {
-        await auth.signOut()
-        set({ user: null, firebaseUser: null, token: null })
+        await supabase.auth.signOut()
+        set({ user: null, session: null })
       },
 
       clearError: () => set({ error: null }),

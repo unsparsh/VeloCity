@@ -122,3 +122,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.mapPickItem {
+  border-top: 1px solid var(--stroke);
+  margin-top: 4px;
+  padding-top: 12px;
+}
+
+.mapPickItem .itemMain {
+  color: var(--accent);
+  font-weight: 600;
+}

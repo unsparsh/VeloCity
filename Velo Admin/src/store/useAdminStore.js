@@ -1,25 +1,32 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { auth } from '../services/firebase'
-import api from '../services/api'
+import { supabase } from '../services/supabase'
 
 const useAdminStore = create(
   persist(
     (set) => ({
       admin: null,
-      firebaseUser: null,
+      session: null,
 
-      setFirebaseUser: (firebaseUser) => set({ firebaseUser }),
+      setSession: (session) => set({ session }),
 
       fetchProfile: async () => {
-        const { data } = await api.get('/auth/me/')
-        set({ admin: data })
-        return data
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return null
+        const user = session.user
+        const admin = {
+          id: user.id,
+          email: user.email,
+          display_name: user.user_metadata?.display_name || user.email,
+          role: user.user_metadata?.role || 'admin',
+        }
+        set({ admin, session })
+        return admin
       },
 
       logout: async () => {
-        if (auth) await auth.signOut()
-        set({ admin: null, firebaseUser: null })
+        await supabase.auth.signOut()
+        set({ admin: null, session: null })
       },
     }),
     {

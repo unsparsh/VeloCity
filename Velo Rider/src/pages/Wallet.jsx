@@ -49,7 +49,7 @@ export default function Wallet() {
         <button
           type="button"
           className={styles.backBtn}
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/')}
           aria-label="Back"
         >
           ←
